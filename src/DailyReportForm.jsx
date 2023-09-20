@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const DailyReportForm = () => {
   const [name, setName] = useState("");
@@ -7,6 +7,7 @@ const DailyReportForm = () => {
   const [blockers, setBlockers] = useState("");
   const [generatedReport, setGeneratedReport] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
+  const [formValid, setFormValid] = useState(false);
 
   const generateReport = () => {
     const now = new Date();
@@ -16,7 +17,8 @@ const DailyReportForm = () => {
     const formattedDate = now.toLocaleDateString("en-US", dateOptions);
     const formattedTime = now.toLocaleTimeString("en-US", timeOptions);
 
-    const report = `Daily Report - ${formattedDate} ${formattedTime} (BD Time)
+    const report = `Daily Report - ${formattedDate}, ${formattedTime} (BD Time)
+
 Name: ${name}
 
 What did you work on Yesterday?
@@ -28,7 +30,7 @@ What are you planning to do today?
 ${today}
 
 Do you have any blockers?
-----------------------------
+-------------------------------------
 ${blockers}`;
 
     setGeneratedReport(report);
@@ -50,6 +52,16 @@ ${blockers}`;
     setBlockers("");
     setGeneratedReport("");
   };
+
+  const shareReportInWhatsApp = () => {
+    const message = encodeURIComponent(generatedReport);
+    const whatsappLink = `whatsapp://send?text=${message}`;
+    window.location.href = whatsappLink;
+  };
+
+  useEffect(() => {
+    setFormValid(name && yesterday && today && blockers);
+  }, [name, yesterday, today, blockers]);
 
   return (
     <div className="container mx-auto p-4">
@@ -111,18 +123,29 @@ ${blockers}`;
             }}
           />
         </div>
-        <div className="mb-4 flex justify-center">
+        <div className="mb-4 flex justify-center text-sm">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+            className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded mx-2"
             onClick={copyToClipboard}
           >
             {copySuccess ? "Copied!" : "Copy Report"}
           </button>
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-2 rounded mx-2"
             onClick={resetForm}
           >
             Reset
+          </button>
+          <button
+            className={`${
+              formValid
+                ? "bg-green-500 hover:bg-green-700"
+                : "bg-gray-500 cursor-not-allowed"
+            } text-white py-1 px-2 rounded mx-2`}
+            onClick={shareReportInWhatsApp}
+            disabled={!formValid}
+          >
+            Share in WhatsApp
           </button>
         </div>
       </div>
