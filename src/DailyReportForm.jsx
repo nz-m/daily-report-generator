@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 const DailyReportForm = () => {
+  const [name, setName] = useState("");
   const [yesterday, setYesterday] = useState("");
   const [today, setToday] = useState("");
   const [blockers, setBlockers] = useState("");
@@ -15,8 +16,8 @@ const DailyReportForm = () => {
     const formattedDate = now.toLocaleDateString("en-US", dateOptions);
     const formattedTime = now.toLocaleTimeString("en-US", timeOptions);
 
-    const report = `
-Daily Report - ${formattedDate} ${formattedTime} (BD Time)
+    const report = `Daily Report - ${formattedDate} ${formattedTime} (BD Time)
+Name: ${name}
 
 What did you work on Yesterday?
 -------------------------------------
@@ -28,8 +29,7 @@ ${today}
 
 Do you have any blockers?
 ----------------------------
-${blockers}
-`;
+${blockers}`;
 
     setGeneratedReport(report);
   };
@@ -44,6 +44,7 @@ ${blockers}
   };
 
   const resetForm = () => {
+    setName("");
     setYesterday("");
     setToday("");
     setBlockers("");
@@ -54,6 +55,20 @@ ${blockers}
     <div className="container mx-auto p-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">Daily Report</h1>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
+          <input
+            className="w-full border rounded py-2 px-3"
+            type="text"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              generateReport();
+            }}
+          />
+        </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             What did you work on Yesterday?
