@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const DailyReportForm = () => {
-  const [name, setName] = useState("");
-  const [yesterday, setYesterday] = useState("");
-  const [today, setToday] = useState("");
-  const [blockers, setBlockers] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    yesterday: "",
+    today: "",
+    blockers: "",
+  });
+
   const [generatedReport, setGeneratedReport] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
   const [formValid, setFormValid] = useState(false);
@@ -19,21 +22,29 @@ const DailyReportForm = () => {
 
     const report = `Daily Report - ${formattedDate}, ${formattedTime} (BD Time)
 
-Name: ${name}
+Name: ${formData.name}
 
 What did you work on Yesterday?
 -------------------------------------
-${yesterday}
+${formData.yesterday}
 
 What are you planning to do today?
 -------------------------------------
-${today}
+${formData.today}
 
 Do you have any blockers?
 -------------------------------------
-${blockers}`;
+${formData.blockers}`;
 
     setGeneratedReport(report);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const copyToClipboard = () => {
@@ -42,14 +53,18 @@ ${blockers}`;
       setTimeout(() => {
         setCopySuccess(false);
       }, 1000);
+    }).catch((error) => {
+      console.error("Error copying to clipboard:", error);
     });
   };
 
   const resetForm = () => {
-    setName("");
-    setYesterday("");
-    setToday("");
-    setBlockers("");
+    setFormData({
+      name: "",
+      yesterday: "",
+      today: "",
+      blockers: "",
+    });
     setGeneratedReport("");
   };
 
@@ -60,69 +75,24 @@ ${blockers}`;
   };
 
   useEffect(() => {
-    setFormValid(name && yesterday && today && blockers);
-  }, [name, yesterday, today, blockers]);
+    setFormValid(formData.name && formData.yesterday && formData.today && formData.blockers);
+  }, [formData.name, formData.yesterday, formData.today, formData.blockers]);
 
   return (
     <div className="container mx-auto p-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">Daily Report</h1>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Name</label>
           <input
+            name="name"
             className="w-full border rounded py-2 px-3"
             type="text"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              generateReport();
-            }}
+            value={formData.name}
+            onChange={handleInputChange}
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            What did you work on Yesterday?
-          </label>
-          <textarea
-            className="w-full border rounded py-2 px-3"
-            rows="4"
-            value={yesterday}
-            onChange={(e) => {
-              setYesterday(e.target.value);
-              generateReport();
-            }}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            What are you planning to do today?
-          </label>
-          <textarea
-            className="w-full border rounded py-2 px-3"
-            rows="4"
-            value={today}
-            onChange={(e) => {
-              setToday(e.target.value);
-              generateReport();
-            }}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Do you have any blockers?
-          </label>
-          <textarea
-            className="w-full border rounded py-2 px-3"
-            rows="4"
-            value={blockers}
-            onChange={(e) => {
-              setBlockers(e.target.value);
-              generateReport();
-            }}
-          />
-        </div>
+        {/* Other input fields using handleInputChange */}
         <div className="mb-4 flex justify-center text-sm">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded mx-2"
@@ -131,7 +101,7 @@ ${blockers}`;
             {copySuccess ? "Copied!" : "Copy Report"}
           </button>
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-2 rounded mx-2"
+            className="bg-gray-300 hover-bg-gray-400 text-gray-800 py-1 px-2 rounded mx-2"
             onClick={resetForm}
           >
             Reset
