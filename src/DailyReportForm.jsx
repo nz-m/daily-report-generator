@@ -63,6 +63,10 @@ ${blockers}`;
     setFormValid(name && yesterday && today && blockers);
   }, [name, yesterday, today, blockers]);
 
+  useEffect(() => {
+    generateReport();
+  }, [name, yesterday, today, blockers]);
+
   return (
     <div className="container mx-auto p-4">
       <div className="max-w-2xl mx-auto">
@@ -75,10 +79,7 @@ ${blockers}`;
             className="w-full border rounded py-2 px-3"
             type="text"
             value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              generateReport();
-            }}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -89,10 +90,7 @@ ${blockers}`;
             className="w-full border rounded py-2 px-3"
             rows="4"
             value={yesterday}
-            onChange={(e) => {
-              setYesterday(e.target.value);
-              generateReport();
-            }}
+            onChange={(e) => setYesterday(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -103,10 +101,7 @@ ${blockers}`;
             className="w-full border rounded py-2 px-3"
             rows="4"
             value={today}
-            onChange={(e) => {
-              setToday(e.target.value);
-              generateReport();
-            }}
+            onChange={(e) => setToday(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -117,10 +112,7 @@ ${blockers}`;
             className="w-full border rounded py-2 px-3"
             rows="4"
             value={blockers}
-            onChange={(e) => {
-              setBlockers(e.target.value);
-              generateReport();
-            }}
+            onChange={(e) => setBlockers(e.target.value)}
           />
         </div>
         <div className="mb-4 flex justify-center text-sm">
